@@ -76,5 +76,5 @@ This repo is organized in sequential sections. Each step will build on top of th
 
 ## Final Words
 
->"To err is human, to forgive is divine" - *Latin proverb*
+>"To err is human, to forgive is divine" - *Latin proverb*  
 There are probably a lot of mistakes, a lot of jank, and gaps in documenting and explaining this repo. I am always happy to listen and act on constructive feedback given with kind intent to continuously improve. Thank you!
