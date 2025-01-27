@@ -22,7 +22,8 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 
 ## Architecture Diagram
 
-**Remember to add!!!!!**
+![ts-k8s-sr drawio](https://github.com/user-attachments/assets/c8dc008e-b5ad-44bb-9fab-823125ba6deb)
+
 
 ## Setup Instructions
 
