@@ -141,18 +141,6 @@ resource "helm_release" "tailscale_operator" {
 ######################################################################
 # Apply manifests                                                    #
 ######################################################################
-# resource "kubernetes_manifest" "nginx_resources" {
-#   for_each = {
-#     "nginx_service"     = local.nginx_service
-#     "nginx_configmap"   = local.nginx_configmap
-#     "nginx_deployment"  = local.nginx_deployment
-#   }
-
-#   manifest = each.value
-#   depends_on = [
-#     module.eks,
-#   ]
-# }
 data "kubectl_path_documents" "docs" {
   pattern = "../manifests/*.yaml"
 }
