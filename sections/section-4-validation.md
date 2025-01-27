@@ -84,7 +84,8 @@
      100.113.238.21  kb-demo-cluster-cidrs tagged-devices linux   idle, tx 3884 rx 3684
      100.100.42.81   tailscale-operator   tagged-devices linux   -
      ```
-
+     Now do a ```tailscale ping``` to the cluster from the EC2 instance     
+     
      ```bash
      tailscale ping kb-demo-cluster-cidrs
      ```
