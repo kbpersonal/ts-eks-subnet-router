@@ -100,8 +100,8 @@
    EOT
    ```
 
-   > [!TIP]
-   > If you get errors, you may debug it yourself, open a Github issue,or curse at the sky (and also at the author of this repo) for wasting your valuable time that you'd rather have spent doomscrolling anyway.
+> [!TIP]
+> If you get errors, you may debug it yourself, open a Github issue,or curse at the sky (and also at the author of this repo) for wasting your valuable time that you'd rather have spent doomscrolling anyway.
 
 [:arrow_right: Section 4 - Validation/Testing](section-4-validation.md)  
 [:arrow_left: Section 2 - Local Environment Setup](section-2-local-env.md)
