@@ -12,7 +12,7 @@
      Terraform v1.10.5
    ```
 
-2. Go into the ```terraform``` folder in the repo and initialize it:
+2. Go into the ```terraform``` folder from the root of the repo and initialize it:
 
    ```bash
    cd terraform
