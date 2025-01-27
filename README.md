@@ -28,6 +28,16 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 
 ![ts-k8s-sr drawio](https://github.com/user-attachments/assets/c8dc008e-b5ad-44bb-9fab-823125ba6deb)
 
+### Packet path (as per my currently limited understanding)
+
+1. The client EC2 instance first makes a DNS request to the `nginx` (server) pod to resolve the FQDN `nginx.default.svc.cluster.local`, the client's DNS request will first be directed to the split-DNS resolver that is the `kube-dns` `ClusterIP` service that is reachable through the subnet router pod that is advertising that entire prefix
+2. `kube-dns` returns a response to the client with the IP of the `nginx` `ClusterIP` service which is also in the same advertised prefix
+3. Now for the actual HTTP request via `curl`, the source IP is the internal interface IP of the client and the destination IP is the `ClusterIP` of the `nginx` service that is routed through the subnet router pod as next-hop through the Tailscale overlay tunnel
+4. The subnet router pod receives the request, SNATs the source IP to its own pod IP and sends off the request to `kube-proxy` as this is a service `ClusterIP`
+5. `kube-proxy` routes to the appropriate `nginx` endpoint (normal K8s business)
+6. `nginx` responds to the subnet router as destination and from there the subnet router knows to send the packet back to the client over the Tailscale overlay tunnel
+
+*Disclaimer: I may be way off here but I need to collect do some packet captures to fully understand the packet path when I get some more time to play with this*
 
 ## Setup Instructions
 
