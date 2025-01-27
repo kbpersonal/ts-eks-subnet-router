@@ -55,6 +55,7 @@ This repo is organized in sequential sections. Each step will build on top of th
 2. It is unclear whether `tags` and `autoApprovers` can be injected into the ACL configuration via the tailscale Terraform provider. The description and docs there again need some love.
 3. Same as #2 for creating Oauth client dynamically - maybe this one is locked down to the UI for security but I don't know. With that automation it would help properly create/revoke short-lived oAuth tokens with specific scopes for specific machines (subnet router vs regular Tailscale client)
 4. Ephemeral authkey support for the tailscale-operator pod would be nice, see [this issue](https://github.com/tailscale/tailscale/issues/10166)
+5. There is probably something happening with the NAT Gatewway endpoint making DERP happen again on new packet because the tailnet doesn't know of its existence. I think there was some experimental flag to do something about that but I will explore it when I have more time.
 
 ## TODO
 
