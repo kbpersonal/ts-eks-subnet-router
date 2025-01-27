@@ -1,5 +1,9 @@
 # Secure ClusterIP Service Access via Tailscale Subnet Router in EKS
 
+## Disclaimer
+> [!WARNING]
+> This repo is intended to be used for educational purposes only. Conscious decisions have been taken to enable a quick setup with opinionated architecture choices over security (like best practices around handling secret keys for example) to get up and running as a proof-of-concept/learning-lab environment. Please do not attempt to use this for a production setup or anything serious! 
+
 ## Problem Statement
 
 Normally when non-cluster workloads need to access cluster microservices, those microservices need to be exposed as a ```LoadBalancer``` service publically. This both incurs costs due to AWS spinning up a network load-balancer and charging you for it as well as the traffic that passes through it, and in addition is a security risk if any bad actors are in the VPC up to no good to try and intercept traffic.
