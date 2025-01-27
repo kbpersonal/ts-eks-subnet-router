@@ -62,8 +62,8 @@
    ```
 
 4. Open up ```terraform.tfvars``` in your favourite text editor and plug in the required and optional (if desired) input variables
-   > [!IMPORTANT]
-   > [CLICK HERE](section-3.1-inputs.md) for an explanation of all user input variables that can be configured  
+> [!IMPORTANT]
+> [CLICK HERE](section-3.1-inputs.md) for an explanation of all user input variables that can be configured  
 
 5. (Optional) Plan the deployment with ```terraform plan``` , save it to a human-readable `txt` file and review the plan fully
 
