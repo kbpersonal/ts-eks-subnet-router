@@ -63,7 +63,7 @@
 
    - Click on each machine and check their characteristics. Check the `<clustername>-cluster-cidrs` machine reflects the routes that you intended to advertise (10.0.0.0/16 and 10.40.0.0/16 in this example).
 
-   - Go to `DNS` at the top, and scroll to find under `Nameservers` that there is a SplitDNS entry for the search domain `svc.cluster.local` to the `ClusterIP` of the `kube-dns` service of the cluster.
+   - Go to `DNS` at the top, and scroll to find under `Nameservers` that there is a SplitDNS entry for the domain `svc.cluster.local` to the `ClusterIP` of the `kube-dns` service of the cluster.
 
 3. SSH to the EC2 instance using the public-IP shown in the completed output of the `terraform apply` command:
 
