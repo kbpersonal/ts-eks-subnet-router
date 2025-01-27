@@ -39,7 +39,7 @@ This repo is organized in sequential sections. Each step will build on top of th
 
 1. The Tailscale docs don't seem to have a full .spec of how to define the options under `subnetRouter` , I can guess but it doesn't need to be like that. I wanted to play with 'no-snat-subnet-router' but unsure how to define the key under the spec and left it for now.
 2. It is unclear whether `tags` and `autoApprovers` can be injected into the ACL configuration via the tailscale Terraform provider. The description and docs there again need some love.
-3. Same as #2 for creating Oauth client dynamically - maybe this one is locked down to the UI for security but I don't know.
+3. Same as #2 for creating Oauth client dynamically - maybe this one is locked down to the UI for security but I don't know. With that automation it would help properly create/revoke short-lived oAuth tokens with specific scopes for specific machines (subnet router vs regular Tailscale client)
 4. Ephemeral authkey support for the tailscale-operator pod would be nice, see [this issue](https://github.com/tailscale/tailscale/issues/10166)
 
 ## TODO
