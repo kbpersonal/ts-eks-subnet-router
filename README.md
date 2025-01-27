@@ -1,8 +1,8 @@
 # Secure ClusterIP Service Access via Tailscale Subnet Router in EKS
 
-## Disclaimer
+## Disclaimers
 > [!WARNING]
-> This repo is intended to be used for educational purposes only. Conscious decisions have been taken to enable a quick setup with opinionated architecture choices over security (like best practices around handling secret keys for example) to get up and running as a proof-of-concept/learning-lab environment. Please do not attempt to use this for a production setup or anything serious! 
+> This repo is intended to be used for educational purposes only. Conscious decisions have been taken to enable a quick setup with opinionated architecture choices over security (like best practices around handling secret keys for example) to get up and running as a proof-of-concept/learning-lab environment. Please do not attempt to use this for a production setup or anything serious 
 
 ## Problem Statement
 
@@ -72,4 +72,9 @@ This repo is organized in sequential sections. Each step will build on top of th
 [Terraform AWS VPC Module](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest)  
 [Terraform-CloudInit-Tailscale Module](https://github.com/lbrlabs/terraform-cloudinit-tailscale)  
 [Terraform Kubectl Provider](https://registry.terraform.io/providers/gavinbunney/kubectl/latest)  
-[Terraform Kubernetes Provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs)  
+[Terraform Kubernetes Provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs)
+
+## Final Words
+
+>"To err is human, to forgive is divine" - *Latin proverb*
+There are probably a lot of mistakes, a lot of jank, and gaps in documenting and explaining this repo. I am always happy to listen and act on constructive feedback given with kind intent to continuously improve. Thank you!
