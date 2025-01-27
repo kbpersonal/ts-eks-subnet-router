@@ -27,7 +27,7 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 
 ## Setup Instructions
 
-This repo is organized in sequential sections. Each step will build on top of the other so please follow the order as proposed below
+This repo is organized in sequential sections. Each step will build on top of the other so please follow the order as proposed below. You can start by clicking on `Step 1 - Tailscale Admin Portal Setup' here. 
 
 [Step 1 - Tailscale Admin Portal Setup](sections/section-1-ts-admin-portal.md)  
 [Step 2 - Local Environment Setup](sections/section-2-local-env.md)  
