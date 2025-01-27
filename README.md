@@ -47,6 +47,7 @@ This repo is organized in sequential sections. Each step will build on top of th
 1. EC2 instance needs to have the public-IP removed and switch to Tailscale SSH and use with a 'jumphost' that is also on the Tailnet. Make it fully private.
 2. More complex network scenarios/topologies closer to real deployments across VPCs and regions. Testing w/VPC peering and doing multi-cluster stuff with connectors for Ingress/Egress gateway functionality would be cool to setup. See how far we can get before it's all DERP.
 3. Test with real apps/databases. See how Wireguard throughput/performance is. Try to do some `Locust` testing for maximizing throughput w/multiple client streams.
+4. Add more meaningful screenshots to this repo but I also don't want it to get too bloated. TBD what the solution is.
 
 ## Credits
 
