@@ -26,7 +26,7 @@ Ensure your environment has these tools:
 
 Yo,remember to actually **ADD REPO LINK** once it exists!!
 
-```git clone https://this-repo.git```
+```git clone https://github.com/kbpersonal/ts-eks-subnet-router.git```
 
 [:arrow_right: Section 3 - Terraform Setup and Deploy](section-3-terraform-setup.md)  
 [:arrow_left: Section 1 - Tailscale Admin Portal Setup](section-1-ts-admin-portal.md)
