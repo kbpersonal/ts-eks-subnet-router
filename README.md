@@ -10,6 +10,10 @@ Normally when non-cluster workloads need to access cluster microservices, those 
 
 Tailscale allows us to both solve the connectivity problem and offer defense-in-depth by connecting both sides via Wireguard while also allowing the non-cluster workloads to access all the ```ClusterIP``` services in the cluster that would normally not be accessible to it and bypass the need for a cloud load-balancer.
 
+Similarly, when cluster workloads need to access an external non-cluster service like a database or some other service hosted outside the cluster, secure egress access is required as well in order to not have to ask for exceptions for allowance through stringent firewall rules in front of those non-cluster workloads.
+
+Tailscale helps us to solve the connectivity and security  issue by proxying workload traffic securely and easily without requiring any firewall modifications to those non-cluster workloads.
+
 ## Overview
 
 In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
