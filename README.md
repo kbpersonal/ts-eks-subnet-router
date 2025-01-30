@@ -1,4 +1,4 @@
-# Secure ClusterIP Service Access via Tailscale Subnet Router in EKS
+# Secure Access with Tailscale on Kubernetes
 
 ## Disclaimer
 > [!WARNING]
@@ -9,6 +9,10 @@
 Normally when non-cluster workloads need to access cluster microservices, those microservices need to be exposed as a ```LoadBalancer``` service publically. This both incurs costs due to AWS spinning up a network load-balancer and charging you for it as well as the traffic that passes through it, and in addition is a security risk if any bad actors are in the VPC up to no good to try and intercept traffic.
 
 Tailscale allows us to both solve the connectivity problem and offer defense-in-depth by connecting both sides via Wireguard while also allowing the non-cluster workloads to access all the ```ClusterIP``` services in the cluster that would normally not be accessible to it and bypass the need for a cloud load-balancer.
+
+Similarly, when cluster workloads need to access an external non-cluster service like a database or some other service hosted outside the cluster, secure egress access is required as well in order to not have to ask for exceptions for allowance through stringent firewall rules in front of those non-cluster workloads.
+
+Tailscale helps us to solve the connectivity and security  issue by proxying workload traffic securely and easily without requiring any firewall modifications to those non-cluster workloads.
 
 ## Overview
 
@@ -41,7 +45,7 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 
 ## Architecture Diagram
 
-![ts-k8s-sr drawio](https://github.com/user-attachments/assets/c8dc008e-b5ad-44bb-9fab-823125ba6deb)
+![ts-k8s-sr drawio](https://github.com/user-attachments/assets/00e92c07-b85e-44d6-9601-1a4728c06374)
 
 ### Packet path for the Subnet Router Scenario (as per my currently limited understanding)
 
