@@ -1,3 +1,11 @@
+output "ssh_keyname" {
+  value = var.ssh_keyname
+}
+
+output "client_public_ip" {
+  value = aws_instance.client.public_ip
+}
+
 output "Message" {
   description = "Instructions for configuring your environment after Terraform apply."
   value = <<-EOT
