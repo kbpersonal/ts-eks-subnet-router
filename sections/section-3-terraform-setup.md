@@ -103,7 +103,7 @@
 > [!TIP]
 > If you get errors, please feel to debug it yourself, open a Github issue so I can address it,or curse at the sky (and also at me) for wasting your valuable time. 
 
-[:arrow_right: Section 4 - Validation/Testing](section-4-validation.md)  
+[:arrow_right: Section 4 - Subnet Router Validation/Testing](section-4-sr-validation.md)  
 [:arrow_left: Section 2 - Local Environment Setup](section-2-local-env.md)
 
 [:leftwards_arrow_with_hook: Back to Main](../README.md)
