@@ -41,7 +41,7 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 
 ## Architecture Diagram
 
-![ts-k8s-sr drawio](https://github.com/user-attachments/assets/c8dc008e-b5ad-44bb-9fab-823125ba6deb)
+![ts-k8s-sr drawio](https://github.com/user-attachments/assets/156d058f-ab7e-4298-b708-d055ea122731)
 
 ### Packet path for the Subnet Router Scenario (as per my currently limited understanding)
 
