@@ -139,7 +139,7 @@ resource "helm_release" "tailscale_operator" {
 }
 
 ######################################################################
-# Apply manifests                                                    #
+# Apply manifests and CRs                                            #
 ######################################################################
 data "kubectl_path_documents" "docs" {
   pattern = "../manifests/*.yaml"
