@@ -145,6 +145,7 @@ data "kubectl_path_documents" "docs" {
   pattern = "../manifests/*.yaml"
 }
 
+# Deploy nginx in the cluster 
 resource "kubectl_manifest" "app_manifests" {
   for_each  = data.kubectl_path_documents.docs.manifests
   yaml_body = each.value
@@ -174,7 +175,7 @@ YAML
     ]
 }
 
-# Grab the client instance's Tailscale device details
+# Grab the client EC2 instance's Tailscale device details
 data "tailscale_device" "client_device" {
   hostname = var.hostname
   wait_for = "60s"
@@ -183,8 +184,8 @@ data "tailscale_device" "client_device" {
   ]
 }
 
-# Create the Service for the Egress nginx external service
-# Boldly assuming the first address from the device is the IPv4 one
+# Create the Egress Service in the cluster to the nginx server running on the client EC2 instance
+# Boldly assuming the first address from the Tailscale device is the IPv4 one for our annotation
 resource "kubectl_manifest" "egress-svc" {
     yaml_body = <<YAML
 apiVersion: v1
@@ -192,7 +193,7 @@ kind: Service
 metadata:
   annotations:
     tailscale.com/tailnet-ip: ${data.tailscale_device.client_device.addresses[0]} 
-  name: ${var.hostname}-nginx-svc
+  name: ${var.hostname}-egress-svc
 spec:
   externalName: placeholder
   type: ExternalName
