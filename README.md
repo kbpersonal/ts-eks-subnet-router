@@ -1,4 +1,4 @@
-# Secure ClusterIP Service Access via Tailscale Subnet Router in EKS
+# Secure Access with Tailscale on Kubernetes
 
 ## Disclaimer
 > [!WARNING]
