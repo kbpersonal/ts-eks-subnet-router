@@ -51,7 +51,7 @@ resource "aws_security_group" "main" {
   }
 }
 
-# Provision the EC2 instance and pass in templatized base64-encoded cloudinit data from the module that sets up TS
+# Provision the EC2 instance,pass in templatized base64-encoded cloudinit data from the module that sets up TS, and install nginx container
 resource "aws_instance" "client" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
@@ -61,7 +61,8 @@ resource "aws_instance" "client" {
   key_name               = local.key_name 
   ebs_optimized          = true
 
-  user_data_base64            = module.ubuntu-tailscale-client.rendered
+  user_data_base64       = module.ubuntu-tailscale-client.rendered
+
   associate_public_ip_address = true
 
   metadata_options {
@@ -75,4 +76,54 @@ resource "aws_instance" "client" {
       "Name" = var.hostname
     }
   )
+
+  # Add Docker installation with remote-exec provisioner
+  provisioner "remote-exec" {
+    inline = [
+      "curl -fsSL https://get.docker.com | sh",        
+      "systemctl start docker",                         
+      "systemctl enable docker",
+      "while ! systemctl is-active --quiet docker; do sleep 2; done",                         
+      "mkdir -p /home/ubuntu/nginx_docker",            
+      "cp ${path.module}/files/nginx.conf /home/ubuntu/nginx_docker/nginx.conf"  # Copy nginx.conf
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/${local.key_name}.pem") # User needs put their private key in ~/.ssh (for now)
+      host        = aws_instance.client.public_ip
+    }
+  }
+}
+
+# Docker provider configuration using SSH to the EC2 instance
+provider "docker" {
+  host     = "ssh://ubuntu@${aws_instance.client.public_ip}"
+  ssh_opts = ["-i", "~/.ssh/${local.key_name}.pem"]
+}
+
+# Grab the latest nginx image digest
+resource "docker_image" "nginx" {
+  name = "nginx:latest"
+  depends_on = [aws_instance.client]
+}
+
+# NGINX Docker container setup (using the nginx.conf copied by remote-exec-provisioner)
+resource "docker_container" "nginx" {
+  name  = "nginx_server"
+  image = docker_image.nginx.image_id
+  ports {
+    internal = 80
+    external = 80
+  }
+  volumes {
+    container_path = "/etc/nginx/nginx.conf"
+    host_path      = "/home/ubuntu/nginx_docker/nginx.conf" 
+  }
+  restart = "unless-stopped"
+  lifecycle {
+    # This provider hates reconciling state so this is the hack workaround to not make it recreate the container on subsequent terraform applies
+    ignore_changes = [env, dns, dns_search, domainname, network_mode, working_dir, labels, cpu_shares, memory, memory_swap]
+  }
 }

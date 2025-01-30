@@ -141,18 +141,6 @@ resource "helm_release" "tailscale_operator" {
 ######################################################################
 # Apply manifests                                                    #
 ######################################################################
-# resource "kubernetes_manifest" "nginx_resources" {
-#   for_each = {
-#     "nginx_service"     = local.nginx_service
-#     "nginx_configmap"   = local.nginx_configmap
-#     "nginx_deployment"  = local.nginx_deployment
-#   }
-
-#   manifest = each.value
-#   depends_on = [
-#     module.eks,
-#   ]
-# }
 data "kubectl_path_documents" "docs" {
   pattern = "../manifests/*.yaml"
 }
@@ -165,6 +153,7 @@ resource "kubectl_manifest" "app_manifests" {
   ]
 }
 
+# Create the Connector CR for subnet router
 resource "kubectl_manifest" "connector" {
     yaml_body = <<YAML
 apiVersion: tailscale.com/v1alpha1
@@ -179,6 +168,34 @@ spec:
       - "${local.cluster_service_ipv4_cidr}"
   tags:
     - "tag:k8s-operator"
+YAML
+    depends_on = [
+    helm_release.tailscale_operator
+    ]
+}
+
+# Grab the client instance's Tailscale device details
+data "tailscale_device" "client_device" {
+  hostname = var.hostname
+  wait_for = "60s"
+  depends_on = [
+    aws_instance.client
+  ]
+}
+
+# Create the Service for the Egress nginx external service
+# Boldly assuming the first address from the device is the IPv4 one
+resource "kubectl_manifest" "egress-svc" {
+    yaml_body = <<YAML
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    tailscale.com/tailnet-ip: ${data.tailscale_device.client_device.addresses[0]} 
+  name: ${var.hostname}-nginx-svc
+spec:
+  externalName: placeholder
+  type: ExternalName
 YAML
     depends_on = [
     helm_release.tailscale_operator
