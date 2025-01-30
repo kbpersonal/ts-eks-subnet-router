@@ -126,4 +126,5 @@ resource "docker_container" "nginx" {
     # This provider hates reconciling state so this is the hack workaround to not make it recreate the container on subsequent terraform applies
     ignore_changes = [env, dns, dns_search, domainname, network_mode, working_dir, labels, cpu_shares, memory, memory_swap]
   }
+  depends_on = [aws_instance.client]
 }
