@@ -6,10 +6,18 @@ provider "tailscale" {
 
 # Use the module to add the EC2 instance into our tailnet
 module "ubuntu-tailscale-client" {
-  source         = "./modules/cloudinit-ts"
-  hostname       = var.hostname
-  accept_routes  = true
-  primary_tag    = "k8s-operator"
+  source           = "./modules/cloudinit-ts"
+  hostname         = var.hostname
+  accept_routes    = true
+  ephemeral        = true
+  primary_tag      = "k8s-operator"
+  additional_parts = [
+    {
+      filename     = "install_docker.sh"
+      content_type = "text/x-shellscript"
+      content      = file("${path.module}/files/install_docker.sh")
+    }
+  ]
 }
 
 # Pick the latest Ubuntu 22.04 AMI in the region for our EC2 instance
@@ -77,54 +85,21 @@ resource "aws_instance" "client" {
     }
   )
 
-  # Add Docker installation with remote-exec provisioner
   provisioner "remote-exec" {
     inline = [
-      "curl -fsSL https://get.docker.com | sh",        
-      "systemctl start docker",                         
-      "systemctl enable docker",
-      "while ! systemctl is-active --quiet docker; do sleep 2; done",                         
-      "mkdir -p /home/ubuntu/nginx_docker",            
-      "cp ${path.module}/files/nginx.conf /home/ubuntu/nginx_docker/nginx.conf"  # Copy nginx.conf
+      "mkdir -p /home/ubuntu/nginx_docker"  # Ensure the directory is created
     ]
+  }
+  
+  provisioner "file" {
+    source      = "${path.module}/files/nginx.conf"  # Local file path
+    destination = "/home/ubuntu/nginx_docker/nginx.conf"  # Target path
+  }
 
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("~/.ssh/${local.key_name}.pem") # User needs put their private key in ~/.ssh (for now)
-      host        = aws_instance.client.public_ip
-    }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("~/.ssh/${local.key_name}.pem") # User needs put their private key in ~/.ssh (for now)
+    host        = self.public_ip
   }
 }
-
-# # Docker provider configuration using SSH to the EC2 instance
-# provider "docker" {
-#   host     = "ssh://ubuntu@${aws_instance.client.public_ip}"
-#   ssh_opts = ["-i", "~/.ssh/${local.key_name}.pem"]
-# }
-
-# # Grab the latest nginx image digest
-# resource "docker_image" "nginx" {
-#   name = "nginx:latest"
-#   depends_on = [aws_instance.client]
-# }
-
-# # NGINX Docker container setup (using the nginx.conf copied by remote-exec-provisioner)
-# resource "docker_container" "nginx" {
-#   name  = "nginx_server"
-#   image = docker_image.nginx.image_id
-#   ports {
-#     internal = 80
-#     external = 80
-#   }
-#   volumes {
-#     container_path = "/etc/nginx/nginx.conf"
-#     host_path      = "/home/ubuntu/nginx_docker/nginx.conf" 
-#   }
-#   restart = "unless-stopped"
-#   lifecycle {
-#     # This provider hates reconciling state so this is the hack workaround to not make it recreate the container on subsequent terraform applies
-#     ignore_changes = [env, dns, dns_search, domainname, network_mode, working_dir, labels, cpu_shares, memory, memory_swap]
-#   }
-#   depends_on = [aws_instance.client]
-# }
