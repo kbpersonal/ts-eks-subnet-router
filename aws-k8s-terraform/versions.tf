@@ -18,10 +18,6 @@ terraform {
       source  = "hashicorp/cloudinit"
       version = ">= 2.0"
     }
-    docker = {
-      source = "kreuzwerker/docker"
-      version = ">= 3.0.2"
-    }
     tailscale = {
       source  = "tailscale/tailscale"
       version = ">= 0.13.7"
