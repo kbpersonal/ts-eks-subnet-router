@@ -178,7 +178,7 @@ YAML
 # Grab the client EC2 instance's Tailscale device details
 data "tailscale_device" "client_device" {
   hostname = var.hostname
-  wait_for = "60s"
+  wait_for = "120s"
   depends_on = [
     aws_instance.client
   ]
