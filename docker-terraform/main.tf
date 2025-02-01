@@ -15,7 +15,9 @@ locals {
 # Docker provider configuration using SSH to the EC2 instance
 provider "docker" {
   host     = "ssh://ubuntu@${local.aws_instance_client_public_ip}"
-  ssh_opts = ["-i", "~/.ssh/${local.key_name}.pem"]
+  # Unfortunately atm, we have no easy way to add host key to ~/.ssh/known_hosts for this provider to not complain and fail when connecting to our instance over SSH
+  # So we disable host key checking to make it work. I REALLY hate this kind of bs with TF providers.
+  ssh_opts = ["-i", "~/.ssh/${local.key_name}.pem", "-o", "StrictHostKeyChecking=no"]
 }
 
 # Grab the latest nginx image digest
