@@ -1,8 +1,7 @@
-
-
 #########################################################################################
 # All vars declared as locals for consistency in referencing in the resources (cuz OCD) #
 #########################################################################################
+
 locals {
   name                      = var.name
   region                    = var.region
@@ -13,7 +12,6 @@ locals {
   cluster_version           = var.cluster_version
   oauth_client_id           = var.oauth_client_id
   oauth_client_secret       = var.oauth_client_secret
-  manifest_files            = fileset("${path.module}/../manifests", "*.yaml")
   tags                      = var.tags
   # Not too happy w/the logic below on slicing the subnets, but c'est la vie.
   azs                       = slice(data.aws_availability_zones.available.names, 0, min(length(data.aws_availability_zones.available.names), 3))
