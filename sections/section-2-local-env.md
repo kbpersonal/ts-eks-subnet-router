@@ -5,9 +5,11 @@
 The following are the basic requirements to get going:
 
 - AWS Account with [access/secret key/session token created](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for an [appropriate IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-keys-admin-managed.html)
+
 > [!NOTE]
 > Best practice is to set the key duration to be short-lived during creation and only for the purpose of playing with this lab. Please do not use it for long-term/prod programmatic access to AWS.  
   Once created, the [credentials](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html) should be saved to ```~/.aws/credentials``` as a file or running ```aws configure``` from your terminal to generate that file.
+
 - [SSH Key created via AWS CLI generated or created locally and uploaded to the desired region in AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html), please MAKE SURE that the private key *.pem file is in `~/.ssh` folder with `chmod 400` (read only by user) permissions
 - [Git](https://github.com/git-guides/install-git)
 - Terminal ([bash](https://www.gnu.org/software/bash/),[zsh](https://ohmyz.sh/),[fish](https://fishshell.com/),any other ish)

@@ -39,8 +39,8 @@
    - The ```Write``` box for ```Routes```
    - The ```Write``` box for ```Auth Keys``` under the ```Keys``` section, then make sure the ```tag:k8s-operator``` has been added again
 
-> [!IMPORTANT]
-> Before clicking on ```Generate client``` please ensure you are **READY** to copy/save the credentials securely because once you close that window you **cannot** view the secret key again!!! You'll need to revoke the old client and create a new one if so.
+    > [!IMPORTANT]
+    > Before clicking on ```Generate client``` please ensure you are **READY** to copy/save the credentials securely because once you close that window you **cannot** view the secret key again!!! You'll need to revoke the old client and create a new one if so.
 
 4. You are done for now, you will use the saved OAuth credentials soon for the Terraform setup.
 

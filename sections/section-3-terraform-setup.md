@@ -17,7 +17,7 @@
    - Phase 2: On the EC2 instance, initialize the `nginx` Docker container once the rest of the infra is up
 
 ## Phase 1 Setup
-   
+
 1. Go into the ```aws-k8s-terraform``` folder from the root of the repo and initialize it:
 
    ```bash
@@ -60,6 +60,7 @@
     rerun this command to reinitialize your working directory. If you forget, other
     commands will detect it and remind you to do so if necessary
    ```
+
 2. Copy the ```terraform.tfvars.example``` to ```terraform.tfvars```
 
    ```bash
@@ -67,8 +68,9 @@
    ```
 
 3. Open up ```terraform.tfvars``` in your favourite text editor and plug in the required and optional (if desired) input variables
-> [!IMPORTANT]
-> [CLICK HERE](section-3.1-inputs.md) for an explanation of all user input variables that can be configured
+
+   > [!IMPORTANT]
+   > [CLICK HERE](section-3.1-inputs.md) for an explanation of all user input variables that can be configured
 
 4. (Optional) Plan the deployment with ```terraform plan``` , save it to a human-readable `txt` file and review the plan fully
 
@@ -82,10 +84,11 @@
    ```bash
    terraform apply -auto-approve
    ```
+
    or type in ```terraform apply```, review the plan that gets dumped to `stdout` and confirm the user input with `yes` to start deployment
 
 6. After what will seem like an eternity (might want to get yourself a bevvy) but is closer to ~25m (thanks AWS deployment times!), you should see something like this (with your environment's pertinent information of course):
-   
+
    ```bash
    Apply complete! Resources: 80 added, 0 changed, 0 destroyed.
 
@@ -107,11 +110,12 @@
 ## Phase 2 Setup
 
 1. Go into the `docker-terraform` folder from the root of the repo and initialize it:
-   
+
    ```bash
    cd docker-terraform
    terraform init
    ```
+
    The output should look something like this without errors:
 
    ```bash
@@ -150,6 +154,7 @@
    ```bash
    terraform apply -auto-approve
    ```
+
    or type in ```terraform apply```, review the plan that gets dumped to `stdout` and confirm the user input with `yes` to start deployment
 
 4. This one should go quicker, you should see something like this:
@@ -163,14 +168,15 @@
    Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
    ```
 
-You're done! If provisioning went well, you should now have: 
+You're done! If provisioning went well, you should now have:
+
 - A working EKS cluster you can `kubectl` into
 - An EC2 instance you can SSH into
 
-You can now move on to the next section, which is testing and validation of the scenarios. 
+You can now move on to the next section, which is testing and validation of the scenarios.
 
 > [!TIP]
-> If you get errors, please feel to debug it yourself, open a Github issue so I can address it,or curse at the sky (and also at me) for wasting your valuable time. 
+> If you get errors, please feel to debug it yourself, open a Github issue so I can address it,or curse at the sky (and also at me) for wasting your valuable time.
 
 [:arrow_right: Section 4 - Subnet Router Validation/Testing](section-4-sr-validation.md)  
 [:arrow_left: Section 2 - Local Environment Setup](section-2-local-env.md)
