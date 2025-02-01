@@ -124,6 +124,8 @@ resource "helm_release" "tailscale_operator" {
   repository       = "https://pkgs.tailscale.com/helmcharts"
   namespace        = "tailscale"
   create_namespace = true
+  atomic           = true
+  cleanup_on_fail  = true
   values = [
     yamlencode({
       oauth = {
@@ -134,8 +136,7 @@ resource "helm_release" "tailscale_operator" {
   ]
   depends_on = [
     module.eks,
-  ]
-  wait = true 
+  ] 
 }
 
 ######################################################################
@@ -156,6 +157,7 @@ resource "kubectl_manifest" "app_manifests" {
 
 # Create the Connector CR for subnet router
 resource "kubectl_manifest" "connector" {
+    wait      = true
     yaml_body = <<YAML
 apiVersion: tailscale.com/v1alpha1
 kind: Connector
@@ -187,6 +189,7 @@ data "tailscale_device" "client_device" {
 # Create the Egress Service in the cluster to the nginx server running on the client EC2 instance
 # Boldly assuming the first address from the Tailscale device is the IPv4 one for our annotation
 resource "kubectl_manifest" "egress-svc" {
+    wait      = true
     yaml_body = <<YAML
 apiVersion: v1
 kind: Service
