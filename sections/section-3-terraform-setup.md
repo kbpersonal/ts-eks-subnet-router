@@ -18,10 +18,10 @@
 
 ## Phase 1 Setup
 
-1. Go into the ```aws-k8s-terraform``` folder from the root of the repo and initialize it:
+1. Go into the ```aws-infra-terraform``` folder from the root of the repo and initialize it:
 
    ```bash
-   cd aws-k8s-terraform
+   cd aws-infra-terraform
    terraform init
    ```
 
@@ -109,10 +109,10 @@
 
 ## Phase 2 Setup
 
-1. Go into the `docker-terraform` folder from the root of the repo and initialize it:
+1. Go into the `k8s-docker-terraform` folder from the root of the repo and initialize it:
 
    ```bash
-   cd docker-terraform
+   cd k8s-docker-terraform
    terraform init
    ```
 
