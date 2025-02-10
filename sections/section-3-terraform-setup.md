@@ -13,8 +13,8 @@
    ```
 
 2. The Terraform setup is to be invoked in 2 phases:
-   - Phase 1: Spin up the AWS infra with the EKS cluster, EC2 instance, K8s objects and accompanying resources
-   - Phase 2: On the EC2 instance, initialize the `nginx` Docker container once the rest of the infra is up
+   - Phase 1: Spin up the AWS infra with the EKS cluster, EC2 instance and accompanying supporting resources including the Tailscale-related configs for the Tailnet
+   - Phase 2: Install the application K8s manifests, Tailscale K8s resources on the EKS cluster and also the `nginx` Docker container on the EC2 instance
 
 ## Phase 1 Setup
 
