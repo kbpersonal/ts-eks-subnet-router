@@ -10,6 +10,11 @@ provider "aws" {
 # Get list of available AZs in our region
 data "aws_availability_zones" "available" {}
 
+# Cluster auth datasource
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_name
+}
+
 ################################################################################
 # EKS Cluster                                                                  #
 ################################################################################
