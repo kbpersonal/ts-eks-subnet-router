@@ -9,8 +9,9 @@ module "ubuntu-tailscale-client" {
   source           = "./modules/cloudinit-ts"
   hostname         = var.hostname
   accept_routes    = true
+  advertise_routes = local.advertise_routes
   ephemeral        = true
-  primary_tag      = "k8s-operator"
+  primary_tag      = "subnet-router"
   additional_parts = [
     {
       filename     = "install_docker.sh"

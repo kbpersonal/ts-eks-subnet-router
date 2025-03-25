@@ -31,6 +31,12 @@ variable "cluster_service_ipv4_cidr" {
   default     = "10.40.0.0/16"
 }
 
+variable "cluster_pod_ipv4_cidr" {
+  description = "The CIDR block to use for pod IP addresses."
+  type        = string
+  default     = "10.100.0.0/18"
+}
+
 variable "cluster_version" {
   description = "Kubernetes version for this cluster"
   type        = string
@@ -66,4 +72,10 @@ variable "oauth_client_secret" {
 variable "hostname" {
   description = "Tailscale Machine hostname of the EC2 instance"
   type        = string
+}
+
+variable "advertise_routes" {
+  description = "List of CIDR blocks to advertise via Tailscale in addition to the EKS private subnets"
+  type        = list(string)
+  default     = []  # Default to an empty list if not set
 }

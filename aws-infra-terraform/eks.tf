@@ -17,15 +17,19 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name                   = local.name
-  cluster_version                = local.cluster_version
-  cluster_endpoint_public_access = true
-  enable_cluster_creator_admin_permissions = true # Just for this PoC, we never do this in prod. Right?
+  cluster_name                    = local.name
+  cluster_version                 = local.cluster_version
+  cluster_endpoint_public_access  = false
+  cluster_endpoint_private_access = true
+
+  enable_cluster_creator_admin_permissions = true
   
   cluster_addons = {
     coredns                = {}
     kube-proxy             = {}
-    vpc-cni                = {}
+    vpc-cni                = {
+      pod_cidr = local.cluster_pod_ipv4_cidr
+    }
     metrics-server         = {}   
   }
 
