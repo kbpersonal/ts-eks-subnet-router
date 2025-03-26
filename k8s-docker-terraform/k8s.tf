@@ -126,9 +126,3 @@ resource "tailscale_dns_split_nameservers" "coredns_split_nameservers" {
   domain      = "svc.cluster.local"
   nameservers = [data.kubernetes_service.kubedns.spec[0].cluster_ip]
 }
-
-resource "tailscale_dns_search_paths" "coredns_search_paths" {
-  search_paths = [
-    "svc.cluster.local"
-  ]
-}
