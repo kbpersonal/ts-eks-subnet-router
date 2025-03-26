@@ -46,6 +46,9 @@ resource "helm_release" "tailscale_operator" {
         clientId     = local.oauth_client_id
         clientSecret = local.oauth_client_secret
       }
+      apiServerProxyConfig = {
+        mode = "true"
+      }
     })
   ] 
 }
