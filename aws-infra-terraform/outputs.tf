@@ -66,7 +66,7 @@ Next Steps:
    aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --alias ${module.eks.cluster_name}
 
 2. Test SSH to the EC2 instance's public IP:
-   ssh -i ~/.ssh/${local.key_name}.pem ubuntu@${aws_instance.client.public_ip}
+   ssh -i ~/.ssh/${local.key_name} ubuntu@${aws_instance.client.public_ip}
 
 Happy deploying <3
 EOT

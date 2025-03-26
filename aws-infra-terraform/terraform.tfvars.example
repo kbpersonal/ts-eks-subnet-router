@@ -18,7 +18,7 @@ hostname = "my-ubuntu-client"
 ################################################################################
 # Common User Vars reqd. for all Cluster Instances and client EC2 Instance     #
 ################################################################################
-ssh_keyname = "my-aws-keypair-name"
+ssh_keyname = "my-aws-keypair-name.pem"
 #tags = {
 #  "Environment" = "Test"
 #  "Owner"       = "MeMyselfandI"

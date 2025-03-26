@@ -77,5 +77,5 @@ variable "hostname" {
 variable "advertise_routes" {
   description = "List of CIDR blocks to advertise via Tailscale in addition to the EKS private subnets"
   type        = list(string)
-  default     = []  # Default to an empty list if not set
+  default     = []
 }

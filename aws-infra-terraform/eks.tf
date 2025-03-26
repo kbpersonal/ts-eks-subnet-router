@@ -18,6 +18,7 @@ data "aws_eks_cluster_auth" "this" {
 ################################################################################
 # EKS Cluster                                                                  #
 ################################################################################
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
@@ -32,9 +33,7 @@ module "eks" {
   cluster_addons = {
     coredns                = {}
     kube-proxy             = {}
-    vpc-cni                = {
-      pod_cidr = local.cluster_pod_ipv4_cidr
-    }
+    vpc-cni                = {}
     metrics-server         = {}   
   }
 
@@ -92,4 +91,33 @@ module "eks" {
   }
 
   tags = local.tags
+}
+
+#########################################################################################
+# EC2 to EKS control plane security group access to private kubeapiserver               #
+#########################################################################################
+
+resource "aws_security_group_rule" "eks_control_plane_ingress" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.main.id
+  security_group_id        = module.eks.cluster_primary_security_group_id
+  description              = "Allow traffic from EC2 SR instance SG to EKS control plane on port 443"
+}
+
+#########################################################################################
+# TS Split-DNS setup for EKS private-only kube-apiserver FQDN resolution in the tailnet #
+#########################################################################################
+
+resource "tailscale_dns_split_nameservers" "aws_route53_resolver" {
+  domain      = "eks.amazonaws.com"
+  nameservers = [local.vpc_plus_2_ip]
+}
+
+resource "tailscale_dns_search_paths" "eks_search_paths" {
+  search_paths = [
+    "eks.amazonaws.com"
+  ]
 }

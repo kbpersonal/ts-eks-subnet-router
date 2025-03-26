@@ -57,7 +57,7 @@ data "kubectl_path_documents" "docs" {
   pattern = "../manifests/*.yaml"
 }
 
-# Deploy nginx in the cluster 
+# Deploy all manifests into the cluster 
 resource "kubectl_manifest" "app_manifests" {
   for_each  = data.kubectl_path_documents.docs.manifests
   yaml_body = each.value
@@ -125,4 +125,10 @@ data "kubernetes_service" "kubedns" {
 resource "tailscale_dns_split_nameservers" "coredns_split_nameservers" {
   domain      = "svc.cluster.local"
   nameservers = [data.kubernetes_service.kubedns.spec[0].cluster_ip]
+}
+
+resource "tailscale_dns_search_paths" "coredns_search_paths" {
+  search_paths = [
+    "svc.cluster.local"
+  ]
 }

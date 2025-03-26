@@ -48,7 +48,15 @@ resource "aws_security_group" "main" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow SSH access" # Using key-based access anyway, but again we don't do this in prod.
+    description = "Allow SSH access"
+  }
+
+  ingress {
+    from_port   = 41641
+    to_port     = 41641
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow Tailscale WG direct connection access"
   }
 
   egress {
@@ -60,7 +68,7 @@ resource "aws_security_group" "main" {
   }
 }
 
-# Provision the EC2 instance,pass in templatized base64-encoded cloudinit data from the module that sets up TS, and install nginx container
+# Provision the EC2 instance,pass in templatized base64-encoded cloudinit data from the module that sets up Tailscale client and Docker
 resource "aws_instance" "client" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
@@ -100,7 +108,7 @@ resource "aws_instance" "client" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/${local.key_name}.pem") # User needs put their private key in ~/.ssh (for now)
+    private_key = file("~/.ssh/${local.key_name}")
     host        = self.public_ip
   }
 }
