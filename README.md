@@ -2,6 +2,7 @@
 
 ## Disclaimer
 > [!WARNING]
+> DOCS ARE OUTDATED!! This will be fixed soon.
 > This repo is intended to be used for educational purposes only. Conscious decisions have been taken to enable a quick setup with opinionated architecture choices over security (like best practices around handling secret keys for example) to get up and running as a proof-of-concept/learning-lab environment. Please do not attempt to use this for a production setup or anything serious 
 
 ## Problem Statement
