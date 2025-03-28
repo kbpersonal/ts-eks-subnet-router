@@ -9,7 +9,6 @@
 | hostname | Tailscale Machine hostname of the EC2 instance | `string` | N/A | Yes |
 | key_name | SSH Keypair name that already exists in your region in AWS, used to access EKS worker nodes and EC2 instance | `string` | N/A | Yes |
 | cluster_version | Kubernetes version | `string` | "1.31" | No |
-| cluster_pod_ipv4_cidr | Kubernetes `Pod` CIDR range | `string` | "10.100.0.0/18" | No |
 | cluster_service_ipv4_cidr | Kubernetes `Service` CIDR range | `string` | "10.40.0.0/16" | No |
 | desired_size | Desired no. of EKS worker nodes | `string` | "2" | No |
 | vpc_cidr | AWS VPC CIDR for EKS cluster and EC2 instance | `string` | "10.0.0.0/16" | No |
