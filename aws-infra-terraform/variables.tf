@@ -1,50 +1,43 @@
 variable "name" {
-  description = "Name of cluster"
-  type        = string
+  description = "List of the cluster names"
+  type        = list(string)
 }
 
-variable "region" {
-  description = "AWS Region of cluster"
-  type        = string
+variable "regions" {
+  description = "List of regions to deploy the VPCs and their respective EKS clusters"
+  type        = list(string)
 }
 
 variable "ssh_keyname" {
   description = "AWS SSH Keypair Name"
-  type        = string
+  type        = list(string)
 }
 
 variable "tags" {
-  description = "Map of tags to assign to resources"
+  description = "Map of user-defined common tags to assign to resources"
   type        = map(string)
   default     = {}
 }
 
-variable "vpc_cidr" {
-  description = "AWS VPC CIDR"
-  type        = string
-  default     = "10.0.0.0/16"
+variable "vpc_cidrs" {
+  description = "List of AWS VPC CIDRs for each cluster"
+  type        = list(string)
 }
 
 variable "cluster_service_ipv4_cidr" {
-  description = "Kubernetes Service CIDR"
-  type        = string
-  default     = "10.40.0.0/16"
-}
-
-variable "cluster_pod_ipv4_cidr" {
-  description = "The CIDR block to use for pod IP addresses."
-  type        = string
-  default     = "10.100.0.0/18"
+  description = "List of Kubernetes Service CIDRs for each cluster"
+  type        = list(string)
+  default     = ["10.40.0.0/16","10.40.0.0/16"]
 }
 
 variable "cluster_version" {
-  description = "Kubernetes version for this cluster"
+  description = "Kubernetes version for all clusters"
   type        = string
-  default     = "1.31"
+  default     = "1.32"
 }
 
 variable "desired_size" {
-  description = "Number of cluster nodes"
+  description = "Desired number of cluster nodes in all clusters"
   type        = string
   default     = "2"
 }
@@ -70,12 +63,12 @@ variable "oauth_client_secret" {
 }
 
 variable "hostname" {
-  description = "Tailscale Machine hostname of the EC2 instance"
-  type        = string
+  description = "List of Tailscale Machine hostname of the EC2 SR instances"
+  type        = list(string)
 }
 
 variable "advertise_routes" {
-  description = "List of CIDR blocks to advertise via Tailscale in addition to the EKS private subnets"
-  type        = list(string)
+  description = "List of user-defined CIDR blocks to advertise via Tailscale for each cluster in addition to the EKS private subnets"
+  type        = list(list(string))  # A list of lists of CIDRs, one for each cluster
   default     = []
 }

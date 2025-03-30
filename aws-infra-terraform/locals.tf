@@ -3,24 +3,31 @@
 #########################################################################################
 
 locals {
-  name                      = var.name
-  region                    = var.region
-  vpc_cidr                  = var.vpc_cidr
-  cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
-  desired_size              = var.desired_size
-  key_name                  = var.ssh_keyname
-  cluster_version           = var.cluster_version
-  oauth_client_id           = var.oauth_client_id
-  oauth_client_secret       = var.oauth_client_secret
-  tags                      = var.tags
-  # Select the first 3 availability zones from the available list of AWS AZs. If <3 are available, select them all
-  azs                       = slice(data.aws_availability_zones.available.names, 0, min(length(data.aws_availability_zones.available.names), 3))
-  # Generate a list of subnets off the VPC CIDR with one public subnet generated per AZ 
-  public_subnets            = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]    
-  # Generate a list of subnets off the VPC CIDR with one private subnet per AZ with an offset
-  private_subnets           = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 10)]
-  # AWS Route 53 Resolver VPC+2 IP 
-  vpc_plus_2_ip             = "${join(".", slice(split(".", var.vpc_cidr), 0, 3))}.2"
-  # Merge EKS private subnets CIDRs, AWS Route 53 Resolver IP, and any user-defined routes and advertise them from the subnet router
-  advertise_routes          = distinct(concat(local.private_subnets, coalesce(var.advertise_routes, []), ["${local.vpc_plus_2_ip}/32"]))
+
+  region_providers = distinct(var.regions)
+
+  cluster_config = [
+    for idx in range(length(var.name)) : {
+      name                      = var.name[idx]
+      region                    = var.regions[idx]
+      vpc_cidr                  = var.vpc_cidrs[idx]
+      cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr[idx]
+      desired_size              = var.desired_size
+      key_name                  = var.ssh_keyname[idx]
+      cluster_version           = var.cluster_version
+      tags                      = merge(var.tags, {"Region" = var.regions[idx]})
+    }
+  ]
+
+  # Generate subnet configurations per cluster
+  subnet_configs = {
+    for c in local.cluster_config :
+    c.name => {
+      azs              = slice(data.aws_availability_zones.available[c.region].names, 0, min(length(data.aws_availability_zones.available[c.region].names), 3))
+      public_subnets   = [for k, v in local.azs : cidrsubnet(c.vpc_cidr, 4, k)]
+      private_subnets  = [for k, v in local.azs : cidrsubnet(c.vpc_cidr, 4, k + 10)]
+      vpc_plus_2_ip    = "${join(".", slice(split(".", c.vpc_cidr), 0, 3))}.2"
+      advertise_routes = distinct(concat(c.private_subnets, coalesce(var.advertise_routes, []), ["${c.vpc_plus_2_ip}/32"]))
+    }
+  }
 }
