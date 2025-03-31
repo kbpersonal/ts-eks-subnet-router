@@ -37,6 +37,7 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
   - Use `curl` binary as a simple test client to query the ```ClusterIP``` ```nginx``` service in the EKS cluster that is being advertised by the cluster Tailscale subnet router to verify connectivity via the cluster service FQDN
 
 **Egress Service from K8s** scenario:
+
 - On the EC2 instance, we will:
   - Install Docker and run a simple `nginx` server container on it that is now a external-to-the-cluster service 
 - On the EKS cluster, we will:
@@ -75,14 +76,19 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 
 ## Setup Instructions
 
-This repo is organized in sequential sections. Each step will build on top of the other so please follow the order as proposed below. You can start by clicking on `Step 1 - Tailscale Admin Portal Setup` here. 
+We're using [Atmos](https://atmos.tools/faq/) to spin up multiple Terraform stacks so we can try to stay as DRY as possible.
 
-[Step 1 - Tailscale Admin Portal Setup](sections/section-1-ts-admin-portal.md)  
-[Step 2 - Local Environment Setup](sections/section-2-local-env.md)  
-[Step 3 - Terraform Setup and Deploy](sections/section-3-terraform-setup.md)  
-[Step 4 - Subnet Router Validation/Testing](sections/section-4-sr-validation.md)  
-[Step 5 - Egress Service Validation/Testing](sections/section-5-eg-svc-validation.md)    
-[Step 6 - Clean-up](sections/section-6-cleanup.md)  
+- [Install Atmos](https://atmos.tools/install)
+- Copy `stacks/catalog/ts-aws-infra.yaml.example` to `stacks/catalog/ts-aws-infra.yaml` and input your vars
+- Use `deploy/*.yaml` files as a template to create your own stacks per region
+- Copy `stacks/workflows/ts-eks-workflow.yaml.example` to `stacks/workflows/ts-eks-workflow.yaml` and make any modifications as needed to the workflows
+- Use the `atmos` wrapper+workflow commands to deploy the stacks in phases:
+  - `atmos workflow plan-phase1 -f ts-eks-workflow`
+  - `atmos workflow apply-phase1 -f ts-eks-workflow`
+  - `atmos workflow plan-phase2 -f ts-eks-workflow`
+  - `atmos workflow apply-phase2 -f ts-eks-workflow`
+- To destroy everything once testing is done:
+  - `atmos workflow clean-all -f ts-eks-workflow`
 
 ## Learnings
 
