@@ -112,13 +112,13 @@ resource "aws_security_group_rule" "eks_control_plane_ingress" {
 #########################################################################################
 
 resource "tailscale_dns_split_nameservers" "aws_route53_resolver" {
-  domain      = "eks.amazonaws.com"
+  domain      = "${local.region}.eks.amazonaws.com"
   nameservers = [local.vpc_plus_2_ip]
 }
 
 resource "tailscale_dns_search_paths" "eks_search_paths" {
   search_paths = [
-    "eks.amazonaws.com",
-    "svc.cluster.local"
+    "${local.region}.eks.amazonaws.com",
+    "svc.${local.environment}.cluster.local"
   ]
 }

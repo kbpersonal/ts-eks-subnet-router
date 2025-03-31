@@ -114,6 +114,39 @@ YAML
     ]
 }
 
+# Rewrite the domain for unique ones for split-DNS across clusters
+resource "kubectl_manifest" "coredns" {
+    wait      = true
+    yaml_body = <<YAML
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+            lameduck 5s
+          }
+        ready
+        rewrite name substring svc.${local.environment}.cluster.local svc.cluster.local
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+YAML
+}
+
+
 ########################################################################
 # TS Split-DNS setup for K8s service FQDN resolution from EC2 instance #
 ########################################################################
@@ -126,6 +159,6 @@ data "kubernetes_service" "kubedns" {
 }
 
 resource "tailscale_dns_split_nameservers" "coredns_split_nameservers" {
-  domain      = "svc.cluster.local"
+  domain      = "svc.${local.environment}.cluster.local"
   nameservers = [data.kubernetes_service.kubedns.spec[0].cluster_ip]
 }

@@ -2,7 +2,7 @@
 data "terraform_remote_state" "aws_tfstate" {
   backend = "local"
   config = {
-    path = "${path.root}/../aws-infra-terraform/terraform.tfstate"
+    path = "${path.root}/../ts-aws-infra/terraform.tfstate.d/${local.tenant}-${local.environment}-${local.stage}/terraform.tfstate"
   }
 }
 
@@ -11,6 +11,9 @@ data "terraform_remote_state" "aws_tfstate" {
 #######################################################################
 
 locals {
+  tenant                        = var.tenant
+  environment                   = var.environment
+  stage                         = var.stage
   name                          = data.terraform_remote_state.aws_tfstate.outputs.name
   hostname                      = data.terraform_remote_state.aws_tfstate.outputs.hostname
   vpc_cidr                      = data.terraform_remote_state.aws_tfstate.outputs.vpc_cidr
