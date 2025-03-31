@@ -57,7 +57,7 @@ resource "helm_release" "tailscale_operator" {
 # Apply manifests and CRs                                            #
 ######################################################################
 data "kubectl_path_documents" "docs" {
-  pattern = "../manifests/*.yaml"
+  pattern = "manifests/*.yaml"
 }
 
 # Deploy all manifests into the cluster 

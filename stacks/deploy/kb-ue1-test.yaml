@@ -1,0 +1,22 @@
+vars:
+  region: us-east-1
+  tenant: kb
+  environment: ue1  
+  stage: test
+
+import:
+  - catalog/ts-aws-infra
+
+components:
+  terraform:
+    ts-aws-infra:
+      vars:
+        name: "kb-demo-1"
+        hostname: "kb-ubuntu-sr-1"
+        vpc_cidr: "10.0.0.0/16"
+        cluster_service_ipv4_cidr: "10.40.0.0/16"
+    ts-k8s-docker:
+      settings:
+        depends_on:
+          1:
+            component: "ts-aws-infra"

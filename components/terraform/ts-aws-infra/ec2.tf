@@ -6,11 +6,10 @@ provider "tailscale" {
 
 # Use the module to add the EC2 instance into our tailnet
 module "ubuntu-tailscale-client" {
-  for_each        = { for c in local.cluster_config : c.name => c }
   source           = "./modules/cloudinit-ts"
-  hostname         = var.hostname[each.key]
+  hostname         = var.hostname
   accept_routes    = true
-  advertise_routes = local.subnet_configs[each.key].advertise_routes
+  advertise_routes = local.advertise_routes
   ephemeral        = false
   primary_tag      = "subnet-router"
   additional_parts = [
@@ -41,9 +40,7 @@ data "aws_ami" "ubuntu" {
 
 # Allow SSH access via public IP because we're not exploring Tailscale SSH yet (TBD in the future)
 resource "aws_security_group" "main" {
-  for_each = { for c in local.cluster_config : c.name => c }
-
-  vpc_id      = module.vpc[each.key].vpc_id
+  vpc_id      = module.vpc.vpc_id
   description = "Required access traffic"
     
   ingress {
@@ -73,17 +70,15 @@ resource "aws_security_group" "main" {
 
 # Provision the EC2 instance,pass in templatized base64-encoded cloudinit data from the module that sets up Tailscale client and Docker
 resource "aws_instance" "client" {
-  for_each = { for c in local.cluster_config : c.name => c }
-
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
-  subnet_id              = module.vpc[each.key].public_subnets[0]
-  vpc_security_group_ids = [aws_security_group.main[each.key].id]
+  subnet_id              = module.vpc.public_subnets[0]
+  vpc_security_group_ids = [aws_security_group.main.id]
   source_dest_check      = false
-  key_name               = each.value.key_name 
+  key_name               = local.key_name 
   ebs_optimized          = true
 
-  user_data_base64       = module.ubuntu-tailscale-client[each.key].rendered
+  user_data_base64       = module.ubuntu-tailscale-client.rendered
 
   associate_public_ip_address = true
 
@@ -95,7 +90,7 @@ resource "aws_instance" "client" {
   tags = merge(
     local.tags,
     {
-      "Name" = var.hostname[each.key]
+      "Name" = var.hostname
     }
   )
 

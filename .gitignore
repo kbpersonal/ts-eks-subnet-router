@@ -13,7 +13,7 @@ crash.log
 # .tfvars files are managed as part of configuration and so should be included in
 # version control.
 #
-*.tfvars
+*tfvars*
 
 # Ignore any .out files from terraform plan
 *.out
@@ -28,8 +28,11 @@ override.tf.json
 .terraform.lock.hcl
 
 # Include override files you do wish to add to version control using negated pattern
-#
-!*.tfvars.example
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+*.planfile
+
+# Include Atmos-specific files until we figure something else out
+stacks/catalog/ts-aws-infra.yaml
+stacks/workflows/ts-eks-workflow.yaml

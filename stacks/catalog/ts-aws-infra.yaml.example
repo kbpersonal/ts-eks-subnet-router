@@ -1,0 +1,12 @@
+components:
+  terraform:
+    ts-aws-infra:
+      vars:
+        ssh_keyname: "id_ed25519_me"
+        oauth_client_id: "redacted"
+        oauth_client_secret: "redacted"
+        cluster_version: "1.32"
+        desired_size: "2"
+        tags:
+          "Owner": "Me"
+          "Team" : "Myself"

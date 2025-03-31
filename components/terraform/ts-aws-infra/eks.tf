@@ -2,18 +2,17 @@
 # Data sources and Provider Initialization                                     #
 ################################################################################
 
-
-# Get list of available AZs in each region, reference provider for each cluster
-data "aws_availability_zones" "available" {
-  for_each = { for c in local.cluster_config : c.name => c }
-  provider = aws.${each.value.region}
+# Set AWS region
+provider "aws" {
+  region = var.region
 }
 
-# Cluster auth datasource for each cluster
+# Get list of available AZs in our region
+data "aws_availability_zones" "available" {}
+
+# Cluster auth datasource
 data "aws_eks_cluster_auth" "this" {
-  for_each = { for c in local.cluster_config : c.name => c }
-  name      = module.eks[each.key].cluster_name
-  provider  = aws.${each.value.region}  
+  name = module.eks.cluster_name
 }
 
 ################################################################################
@@ -21,17 +20,11 @@ data "aws_eks_cluster_auth" "this" {
 ################################################################################
 
 module "eks" {
-  for_each = { for c in local.cluster_config : c.name => c }
-
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  providers = {
-    aws = aws.${each.value.region}
-  }
-
-  cluster_name                    = each.value.name
-  cluster_version                 = each.value.cluster_version
+  cluster_name                    = local.name
+  cluster_version                 = local.cluster_version
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
 
@@ -47,22 +40,22 @@ module "eks" {
   cluster_enabled_log_types   = []
   create_cloudwatch_log_group = false
 
-  vpc_id                    = module.vpc[each.key].vpc_id
-  subnet_ids                = slice(module.vpc[each.key].private_subnets, 0, length(data.aws_availability_zones.available[each.key].names))
-  cluster_service_ipv4_cidr = each.value.cluster_service_ipv4_cidr
+  vpc_id                    = module.vpc.vpc_id
+  subnet_ids                = slice(module.vpc.private_subnets, 0, length(local.azs))
+  cluster_service_ipv4_cidr = local.cluster_service_ipv4_cidr
 
   eks_managed_node_groups = {
-    worker-node = {
+    "${local.name}-worker-node" = {
       instance_types = ["t3.2xlarge"]
-      node_group_name_prefix = "${each.value.name}-worker-"
+      node_group_name_prefix = "${local.name}-worker-node"
 
       min_size     = 0
       max_size     = 3
-      desired_size = each.value.desired_size
+      desired_size = local.desired_size
       
       disk_size = 100
 
-      key_name = each.value.key_name
+      key_name = local.key_name
 
       pre_bootstrap_user_data = <<-EOT
         yum install -y amazon-ssm-agent kernel-devel-`uname -r`
@@ -70,9 +63,9 @@ module "eks" {
       EOT
 
       tags = merge(
-        each.value.tags,
+        local.tags,
         { 
-          "Name" = "${each.value.name}-worker"
+          "Name" = "${local.name}-worker"
         }
       )
     }
@@ -97,7 +90,7 @@ module "eks" {
     }
   }
 
-  tags = each.value.tags
+  tags = local.tags
 }
 
 #########################################################################################
@@ -105,15 +98,13 @@ module "eks" {
 #########################################################################################
 
 resource "aws_security_group_rule" "eks_control_plane_ingress" {
-  for_each = { for c in local.cluster_config : c.name => c }
-
   type                     = "ingress"
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.main.id
-  security_group_id        = module.eks[each.key].cluster_primary_security_group_id
-  description              = "Allow traffic from each EC2 SR instance SG to respective EKS control plane SG on port 443"
+  security_group_id        = module.eks.cluster_primary_security_group_id
+  description              = "Allow traffic from EC2 SR instance SG to EKS control plane on port 443"
 }
 
 #########################################################################################
@@ -121,10 +112,8 @@ resource "aws_security_group_rule" "eks_control_plane_ingress" {
 #########################################################################################
 
 resource "tailscale_dns_split_nameservers" "aws_route53_resolver" {
-  for_each = { for c in local.cluster_config : c.name => c }
-
   domain      = "eks.amazonaws.com"
-  nameservers = [module.vpc[each.key].vpc_plus_2_ip]
+  nameservers = [local.vpc_plus_2_ip]
 }
 
 resource "tailscale_dns_search_paths" "eks_search_paths" {

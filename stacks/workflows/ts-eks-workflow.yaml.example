@@ -1,0 +1,72 @@
+name: Workflows for Tailscale-EKS
+description: Atmos workflows for managing Tailscale-EKS
+
+workflows:
+  validate-phase1:
+    description: |
+      Run 'terraform validate' on ts-aws-infra component in all stacks
+    steps:
+      - command: terraform validate ts-aws-infra -s kb-ue1-test
+      - command: terraform validate ts-aws-infra -s kb-uw2-test
+
+  plan-phase1:
+    description: |
+      Run 'terraform plan' on ts-aws-infra component in all stacks
+    steps:
+      - command: terraform plan ts-aws-infra -s kb-ue1-test
+      - command: terraform plan ts-aws-infra -s kb-uw2-test
+
+  apply-phase1:
+    description: |
+      Run 'terraform apply -auto-approve' on ts-aws-infra component in all stacks
+    steps:
+      - command: terraform apply ts-aws-infra -auto-approve -s kb-ue1-test
+      - command: terraform apply ts-aws-infra -auto-approve -s kb-uw2-test
+
+  validate-phase2:
+    description: |
+      Run 'terraform validate' on ts-k8s-docker component in all stacks
+    steps:
+      - command: terraform validate ts-k8s-docker -s kb-ue1-test
+      - command: terraform validate ts-k8s-docker -s kb-uw2-test
+
+  plan-phase2:
+    description: |
+      Run 'terraform plan' on ts-k8s-docker component in all stacks
+    steps:
+      - command: terraform plan ts-k8s-docker -s kb-ue1-test
+      - command: terraform plan ts-k8s-docker -s kb-uw2-test
+
+  apply-phase2:
+    description: |
+      Run 'terraform apply -auto-approve' on ts-k8s-docker component in all stacks
+    steps:
+      - command: terraform apply ts-k8s-docker -auto-approve -s kb-ue1-test
+      - command: terraform apply ts-k8s-docker -auto-approve -s kb-uw2-test
+
+  apply-all:
+    description: |
+      Run 'terraform apply -auto-approve' on all components in all stacks
+    steps:
+      - command: terraform apply ts-aws-infra -auto-approve -s kb-ue1-test
+      - command: terraform apply ts-k8s-docker -auto-approve -s kb-ue1-test 
+      - command: terraform apply ts-aws-infra -auto-approve -s kb-uw2-test
+      - command: terraform apply ts-k8s-docker -auto-approve -s kb-uw2-test
+
+  destroy-all:
+    description: |
+      Run 'terraform destroy' on all components in all stacks
+    steps:
+      - command: terraform destroy ts-k8s-docker -s kb-ue1-test
+      - command: terraform destroy ts-aws-infra -s kb-ue1-test
+      - command: terraform destroy ts-k8s-docker -s kb-uw2-test
+      - command: terraform destroy ts-aws-infra -s kb-uw2-test
+
+  clean-all:
+    description: |
+      Run 'terraform destroy' on all components in all stacks
+    steps:
+      - command: terraform clean ts-k8s-docker -auto-approve -s kb-ue1-test
+      - command: terraform clean ts-aws-infra -auto-approve -s kb-ue1-test
+      - command: terraform clean ts-k8s-docker -auto-approve -s kb-uw2-test
+      - command: terraform clean ts-aws-infra -auto-approve -s kb-uw2-test

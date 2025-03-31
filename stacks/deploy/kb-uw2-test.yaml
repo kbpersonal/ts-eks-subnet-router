@@ -1,0 +1,22 @@
+vars:
+  region: us-west-2
+  tenant: kb
+  environment: uw2  
+  stage: test
+
+import:
+  - catalog/ts-aws-infra
+
+components:
+  terraform:
+    ts-aws-infra:
+      vars:
+        name: "kb-demo-2"
+        hostname: "kb-ubuntu-sr-2"
+        vpc_cidr: "10.1.0.0/16"
+        cluster_service_ipv4_cidr: "10.41.0.0/16"
+    ts-k8s-docker:
+      settings:
+        depends_on:
+          1:
+            component: "ts-aws-infra"
