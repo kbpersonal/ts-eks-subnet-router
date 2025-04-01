@@ -1,9 +1,10 @@
 # Secure Access with Tailscale on Kubernetes
 
 ## Disclaimer
+>
 > [!WARNING]
 > DOCS ARE OUTDATED!! This will be fixed soon.
-> This repo is intended to be used for educational purposes only. Conscious decisions have been taken to enable a quick setup with opinionated architecture choices over security (like best practices around handling secret keys for example) to get up and running as a proof-of-concept/learning-lab environment. Please do not attempt to use this for a production setup or anything serious 
+> This repo is intended to be used for educational purposes only. Conscious decisions have been taken to enable a quick setup with opinionated architecture choices over security (like best practices around handling secret keys for example) to get up and running as a proof-of-concept/learning-lab environment. Please do not attempt to use this for a production setup or anything serious.
 
 ## Problem Statement
 
@@ -22,24 +23,25 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 1. Spin up a private EKS cluster with VPC CNI, then:
    - Install the Tailscale Operator and add it to our tailnet
 2. Spin up an EC2 instance in the same VPC but different subnet/availability zone, then:
-   - Run Tailscale on it to add it to our tailnet     
+   - Run Tailscale on it to add it to our tailnet
 3. Configure our tailnet with the following:
    - SplitDNS to the ```kube-dns``` service to resolve and access the ```nginx``` ```ClusterIP``` service by its cluster FQDN for the search domain ```svc.cluster.local``` from the EC2 client instance
 
 ## Scenarios
 
-**Subnet Router on K8s** scenario: 
+**Subnet Router on K8s** scenario:
+
 - On the EKS cluster, we will:
   - Create a Tailscale pod as a subnet router via the ```Connector``` Custom Resource, add it to our tailnet and advertise the cluster's pod & service CIDR routes
   - Deploy a simple ```nginx``` pod with a ```ClusterIP``` service to act as our test server behind the subnet router
 - On the EC2 instance, we will:
-  - Accept the advertised routes from the EKS cluster subnet router 
+  - Accept the advertised routes from the EKS cluster subnet router
   - Use `curl` binary as a simple test client to query the ```ClusterIP``` ```nginx``` service in the EKS cluster that is being advertised by the cluster Tailscale subnet router to verify connectivity via the cluster service FQDN
 
 **Egress Service from K8s** scenario:
 
 - On the EC2 instance, we will:
-  - Install Docker and run a simple `nginx` server container on it that is now a external-to-the-cluster service 
+  - Install Docker and run a simple `nginx` server container on it that is now a external-to-the-cluster service
 - On the EKS cluster, we will:
   - Create an `ExternalName` service that points to the Tailscale IPv4 IP of our external-to-the-cluster `nginx` server running as a standalone container in an EC2 instance
   - The Tailscale Operator will create a pod that acts as an egress proxy and provides our cluster access to this cluster-external service seamlessly
@@ -88,7 +90,6 @@ We're using [Atmos](https://atmos.tools/faq/) to spin up multiple Terraform stac
   - `atmos workflow plan-phase2 -f ts-eks-workflow`
   - `atmos workflow apply-phase2 -f ts-eks-workflow`
 - To destroy everything once testing is done:
-  - `atmos workflow clean-all -f ts-eks-workflow`
 
 ## Learnings
 
