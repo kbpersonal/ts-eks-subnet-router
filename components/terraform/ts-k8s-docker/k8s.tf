@@ -49,6 +49,9 @@ resource "helm_release" "tailscale_operator" {
       apiServerProxyConfig = {
         mode = "true"
       }
+      operatorConfig = {
+        hostname = "tailscale-operator-${local.environment}"
+      }
     })
   ] 
 }
