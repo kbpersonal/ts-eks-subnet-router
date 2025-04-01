@@ -33,7 +33,7 @@ data "aws_eks_cluster_auth" "this" {
 # Tailscale Kubernetes Operator Setup
 ################################################################################
 resource "helm_release" "tailscale_operator" {
-  name             = "tailscale-operator"
+  name             = "tailscale-operator-${local.environment}"
   chart            = "tailscale-operator"
   repository       = "https://pkgs.tailscale.com/helmcharts"
   namespace        = "tailscale"
