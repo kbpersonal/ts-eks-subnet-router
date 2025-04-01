@@ -10,7 +10,6 @@ module "ubuntu-tailscale-client" {
   hostname         = var.hostname
   accept_routes    = true
   advertise_routes = local.advertise_routes
-  ephemeral        = false
   primary_tag      = "subnet-router"
   additional_parts = [
     {
