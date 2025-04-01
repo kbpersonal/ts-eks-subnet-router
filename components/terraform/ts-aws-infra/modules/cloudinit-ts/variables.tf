@@ -175,7 +175,7 @@ variable "ephemeral" {
 }
 
 variable "reusable" {
-  default     = true
+  default     = false
   type        = bool
   description = "Indicates if the key is reusable or single-use."
 }
