@@ -72,9 +72,7 @@ In this EKS-focused PoC, we will use everyone's favourite IaC tool Terraform to:
 5. The proxy pod is nice enough to hand off the packet to the `netshoot` pod and thus there is a response to our initial request  
 
 >[!NOTE]
-> Since the proxy pod is a single point of failure, there is a Custom Resource ProxyGroup to deploy it as a StatefulSet for redundancy. This repo will implement that in the next iteration but for now as a PoC it functions well enough.
-
-*Disclaimer: I may be way off here but I need to collect do some packet captures to fully understand the packet paths for both scenarios when I get some more time*
+> Since the proxy pod is a single point of failure, there is a Custom Resource ProxyGroup to deploy it as a StatefulSet for redundancy. This repo will implement that in the next iteration but for now as a PoC it functions well enough.  
 
 ## Setup Instructions
 
