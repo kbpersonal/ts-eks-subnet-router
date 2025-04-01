@@ -9,7 +9,7 @@ Next Steps:
    ssh -i ~/.ssh/${local.key_name} ubuntu@${aws_instance.client.public_ip}
 
 3. Configure your kubeconfig for Tailscale Operator APIserver proxy access by running:
-   tailscale configure kubeconfig tailscale-operator-${local.environment}
+   tailscale configure kubeconfig tailscale-operator-${local.environment}-${local.stage}
 
 Happy deploying <3
 EOT
