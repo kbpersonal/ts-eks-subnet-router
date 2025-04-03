@@ -162,6 +162,6 @@ data "kubernetes_service" "kubedns" {
 }
 
 resource "tailscale_dns_split_nameservers" "coredns_split_nameservers" {
-  domain      = "svc.${local.environment}.cluster.local"
+  domain      = "${local.environment}.svc.cluster.local"
   nameservers = [data.kubernetes_service.kubedns.spec[0].cluster_ip]
 }

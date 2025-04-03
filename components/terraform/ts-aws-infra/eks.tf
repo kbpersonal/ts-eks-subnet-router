@@ -118,7 +118,7 @@ resource "tailscale_dns_split_nameservers" "aws_route53_resolver" {
 
 resource "tailscale_dns_search_paths" "eks_search_paths" {
   search_paths = [
-    "${local.region}.eks.amazonaws.com",
-    "svc.${local.environment}.cluster.local"
+    "eks.amazonaws.com",
+    "svc.cluster.local"
   ]
 }
