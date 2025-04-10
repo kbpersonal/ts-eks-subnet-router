@@ -9,6 +9,7 @@ module "ubuntu-tailscale-client" {
   source           = "./modules/cloudinit-ts"
   hostname         = var.hostname
   accept_routes    = true
+  enable_ssh       = true
   advertise_routes = local.advertise_routes
   primary_tag      = "subnet-router"
   additional_parts = [
