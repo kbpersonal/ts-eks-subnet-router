@@ -33,6 +33,8 @@ override.tf.json
 # example: *tfplan*
 *.planfile
 
-# Include Atmos-specific files until we figure something else out
-stacks/catalog/ts-aws-infra.yaml
-stacks/workflows/ts-eks-workflow.yaml
+# Include Atmos-specific YAMLs but not examples until we figure something else out
+stacks/catalog/*.yaml
+stacks/workflows/*.yaml
+!stacks/catalog/*.yaml.example
+!stacks/workflows/*.yaml.example
