@@ -6,7 +6,7 @@ provider "tailscale" {
 
 # Use the module to add the EC2 instance into our tailnet
 module "ubuntu-tailscale-client" {
-  source           = "./modules/cloudinit-ts"
+  source           = "../modules/cloudinit-ts"
   hostname         = var.hostname
   accept_routes    = true
   enable_ssh       = true
@@ -16,7 +16,7 @@ module "ubuntu-tailscale-client" {
     {
       filename     = "install_docker.sh"
       content_type = "text/x-shellscript"
-      content      = file("${path.module}/files/install_docker.sh")
+      content      = file("${path.module}/../files/install_docker.sh")
     }
   ]
 }
@@ -101,7 +101,7 @@ resource "aws_instance" "client" {
   }
   
   provisioner "file" {
-    source      = "${path.module}/files/nginx.conf"  # Local file path
+    source      = "${path.module}/../files/nginx.conf"  # Local file path
     destination = "/home/ubuntu/nginx_docker/nginx.conf"  # Target path
   }
 
