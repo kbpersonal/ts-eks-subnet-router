@@ -34,7 +34,9 @@ override.tf.json
 *.planfile
 
 # Include Atmos-specific YAMLs but not examples until we figure something else out
+stacks/deploy/*.yaml
 stacks/catalog/*.yaml
 stacks/workflows/*.yaml
+!stacks/deploy/*.yaml.example
 !stacks/catalog/*.yaml.example
 !stacks/workflows/*.yaml.example
