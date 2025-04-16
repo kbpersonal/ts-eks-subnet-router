@@ -1,0 +1,5 @@
+components:
+  terraform:
+    ts-k8s-docker:
+      vars:
+        proxy_replicas: "3"

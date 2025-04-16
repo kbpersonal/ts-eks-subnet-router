@@ -6,6 +6,7 @@ vars:
 
 import:
   - catalog/ts-aws-infra
+  - catalog/ts-k8s-docker
 
 components:
   terraform:
