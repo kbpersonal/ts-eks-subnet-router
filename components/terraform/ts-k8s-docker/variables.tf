@@ -17,3 +17,8 @@ variable "region" {
   description = "AWS Region of cluster"
   type        = string
 }
+
+variable "proxy_replicas" {
+  description = "Number of replicas for Tailscale ProxyGroup pods"
+  type        = string
+}

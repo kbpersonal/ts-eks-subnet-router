@@ -15,6 +15,7 @@ locals {
   environment                   = var.environment
   stage                         = var.stage
   region                        = var.region
+  proxy_replicas                = var.proxy_replicas
   name                          = data.terraform_remote_state.aws_tfstate.outputs.name
   hostname                      = data.terraform_remote_state.aws_tfstate.outputs.hostname
   vpc_cidr                      = data.terraform_remote_state.aws_tfstate.outputs.vpc_cidr

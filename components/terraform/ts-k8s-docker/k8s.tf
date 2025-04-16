@@ -69,7 +69,30 @@ resource "kubectl_manifest" "app_manifests" {
   yaml_body = each.value
 }
 
-# Create the Connector CR for subnet router
+# Create a ProxyClass to standardize configs applied to operator resources
+resource "kubectl_manifest" "proxyclass" {
+    wait      = true
+    yaml_body = <<YAML
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: ${local.stage}
+spec:
+  statefulSet:
+    pod:
+      labels:
+        tenant: ${local.tenant}
+        environment: ${local.environment}
+        stage: ${local.stage}
+      nodeSelector:
+        beta.kubernetes.io/os: "linux"
+YAML
+    depends_on = [
+    helm_release.tailscale_operator
+    ]
+}
+
+# Create the Connector CR for subnet router w/the proxy class
 resource "kubectl_manifest" "connector" {
     wait      = true
     yaml_body = <<YAML
@@ -78,6 +101,7 @@ kind: Connector
 metadata:
   name: ${local.name}-cluster-cidrs
 spec:
+  proxyClass: ${local.stage}
   hostname: ${local.name}-cluster-cidrs
   subnetRouter:
     advertiseRoutes:
@@ -97,6 +121,24 @@ data "tailscale_device" "client_device" {
   wait_for = "60s"
 }
 
+# Create a ProxyGroup for egress proxies in each cluster
+resource "kubectl_manifest" "egressproxygroup" {
+    wait      = true
+    yaml_body = <<YAML
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyGroup
+metadata:
+  name: ${local.tenant}-${local.environment}-${local.stage}-egressproxy
+spec:
+  type: egress
+  replicas: ${local.proxy_replicas}
+  proxyClass: ${local.stage}
+YAML
+    depends_on = [
+    helm_release.tailscale_operator
+    ]
+}
+
 # Create the Egress Service in the cluster to the nginx server running on the client EC2 instance
 # Boldly assuming the first address from the Tailscale device is the IPv4 one for our annotation
 resource "kubectl_manifest" "egress-svc" {
@@ -106,11 +148,19 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    tailscale.com/tailnet-ip: ${data.tailscale_device.client_device.addresses[0]} 
-  name: ${local.hostname}-egress-svc
+    tailscale.com/tailnet-ip: ${data.tailscale_device.client_device.addresses[0]}
+    tailscale.com/proxy-group: ${local.tenant}-${local.environment}-${local.stage}-egressproxy
+  labels:
+    tailscale.com/proxy-class: ${local.stage}
+  name: ${local.hostname}-nginx-egress-svc
 spec:
   externalName: placeholder
   type: ExternalName
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: nginx
 YAML
     depends_on = [
     helm_release.tailscale_operator
