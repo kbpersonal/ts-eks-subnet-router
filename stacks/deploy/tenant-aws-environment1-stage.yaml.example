@@ -1,7 +1,7 @@
 vars:
-  region: us-west-2
+  region: us-east-1
   tenant: my
-  environment: uw2  
+  environment: aws-ue1  
   stage: test
 
 import:
@@ -12,10 +12,10 @@ components:
   terraform:
     ts-aws-infra:
       vars:
-        name: "my-demo-2"
-        hostname: "my-ubuntu-sr-2"
-        vpc_cidr: "10.1.0.0/16"
-        cluster_service_ipv4_cidr: "10.41.0.0/16"
+        name: "my-demo-1"
+        hostname: "my-ubuntu-sr-1"
+        vpc_cidr: "10.0.0.0/16"
+        cluster_service_ipv4_cidr: "10.40.0.0/16"
     ts-k8s-docker:
       settings:
         depends_on:

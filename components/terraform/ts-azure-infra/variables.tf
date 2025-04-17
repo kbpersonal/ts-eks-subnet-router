@@ -64,8 +64,26 @@ variable "aks_version" {
   type        = string
 }
 
+variable "min_count" {
+  description = "Number of cluster nodes"
+  type        = string
+}
+
 variable "node_count" {
   description = "Number of cluster nodes"
+  type        = string
+}
+
+variable "max_count" {
+  description = "Number of cluster nodes"
+  type        = string
+}
+
+variable "cluster_outbound_type" {
+  description = <<-EOF
+  Outbound type for the cluster: Choose between 'userAssignedNATGateway' 
+  to force hard NAT or 'loadBalancer' to get easy NAT.
+  EOF
   type        = string
 }
 

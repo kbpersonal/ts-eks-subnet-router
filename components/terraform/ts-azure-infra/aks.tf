@@ -1,5 +1,5 @@
 resource "azurerm_kubernetes_cluster" "main" {
-  depends_on = [azurerm_subnet_nat_gateway_association.private]
+  depends_on          = [azurerm_subnet_nat_gateway_association.private, azurerm_nat_gateway_public_ip_association.main]
   name                = format("%s-%s-%s-%s-aks", local.tenant, local.environment, local.stage, local.cluster_name)
   location            = local.location
   resource_group_name = azurerm_resource_group.main.name
@@ -11,9 +11,12 @@ resource "azurerm_kubernetes_cluster" "main" {
     name                 = "np1"
     type                 = "VirtualMachineScaleSets"
     vm_size              = local.cluster_vm_size
-    node_count           = local.node_count
     vnet_subnet_id       = azurerm_subnet.private[0].id
-    auto_scaling_enabled = false
+    auto_scaling_enabled = true
+    min_count            = local.min_count
+    node_count           = local.node_count
+    max_count            = local.max_count
+    os_disk_size_gb      = 50
     tags                 = local.tags
   }
 
@@ -21,7 +24,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     network_plugin     = "azure"
     dns_service_ip     = cidrhost(local.aks_service_ipv4_cidr, 10)
     service_cidr       = local.aks_service_ipv4_cidr
-    outbound_type      = "userAssignedNATGateway"
+    outbound_type      = local.cluster_outbound_type
     load_balancer_sku  = "standard"
   }
 
@@ -50,7 +53,7 @@ data "azurerm_kubernetes_cluster" "credentials" {
 
 resource "tailscale_dns_split_nameservers" "azure_resolver" {
   domain      = "hcp.${local.location}.azmk8s.io"
-  nameservers = [local.vnet_resolver_ip]
+  nameservers = [azurerm_private_dns_resolver_inbound_endpoint.main.ip_configurations[0].private_ip_address]
 }
 
 resource "tailscale_dns_search_paths" "aks_search_paths" {

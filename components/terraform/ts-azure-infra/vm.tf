@@ -4,7 +4,7 @@ module "ubuntu-tailscale-client" {
   hostname         = local.hostname
   accept_routes    = true
   enable_ssh       = true
-  advertise_routes = local.advertise_routes
+  advertise_routes = concat(local.advertise_routes,[azurerm_private_dns_resolver_inbound_endpoint.main.ip_configurations[0].private_ip_address])
   primary_tag      = "subnet-router"
   additional_parts = [
     {
@@ -28,9 +28,10 @@ resource "azurerm_network_interface" "main" {
   name                = format("%s-%s-%s-%s-vm-nic", local.tenant, local.environment, local.stage, local.hostname)
   location            = local.location
   resource_group_name = azurerm_resource_group.main.name
+  ip_forwarding_enabled = true
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.private[0].id
+    subnet_id                     = azurerm_subnet.public[0].id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.main.id
   }
