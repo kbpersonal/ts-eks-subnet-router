@@ -40,3 +40,6 @@ stacks/workflows/*.yaml
 !stacks/deploy/*.yaml.example
 !stacks/catalog/*.yaml.example
 !stacks/workflows/*.yaml.example
+
+# Ignore big bad AI
+.windsurfrules
