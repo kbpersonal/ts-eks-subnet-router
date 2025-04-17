@@ -1,11 +1,13 @@
 components:
   terraform:
-    ts-aws-infra:
+    ts-azure-infra:
       vars:
-        ssh_keyname: "id_ed25519_me"
+        ssh_private_key_path: "~/.ssh/id_ed25519_me"
+        ssh_public_key_path: "~/.ssh/id_ed25519_me.pub"
         oauth_client_id: "redacted"
         oauth_client_secret: "redacted"
         cluster_version: "1.32"
+        cluster_vm_size: "Standard_B2s_v2"
         desired_size: "2"
         tags:
           "Owner": "Me"

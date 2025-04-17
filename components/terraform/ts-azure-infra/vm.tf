@@ -41,7 +41,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   name                = local.hostname
   location            = local.location
   resource_group_name = azurerm_resource_group.main.name
-  size                = var.vm_size
+  size                = local.vm_size
   admin_username      = "ubuntu"
   network_interface_ids = [azurerm_network_interface.main.id]
   admin_ssh_key {

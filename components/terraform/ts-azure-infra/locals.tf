@@ -15,6 +15,7 @@ locals {
   ssh_private_key_path      = var.ssh_private_key_path
   aks_version               = var.aks_version
   cluster_vm_size           = var.cluster_vm_size
+  vm_size                   = var.vm_size
   oauth_client_id           = var.oauth_client_id
   oauth_client_secret       = var.oauth_client_secret
   tags                      = merge(var.tags, {"Region" = var.location}, {"Tenant-Prefix" = var.tenant}, {"Env" = var.environment}, {"Stage" = var.stage})

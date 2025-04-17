@@ -13,8 +13,8 @@ output "vnet_cidr" {
   sensitive = true
 }
 
-output "cluster_service_ipv4_cidr" {
-  value     = local.cluster_service_ipv4_cidr
+output "aks_service_ipv4_cidr" {
+  value     = local.aks_service_ipv4_cidr
   sensitive = true
 }
 
@@ -33,7 +33,7 @@ output "client_public_ip" {
   sensitive = true
 }
 
-output "aks_cluster_endpoint" {
+output "aks_cluster_host" {
   value     = azurerm_kubernetes_cluster.main.kube_config[0].host
   sensitive = true
 }

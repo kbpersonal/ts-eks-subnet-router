@@ -44,12 +44,15 @@ resource "azurerm_nat_gateway" "main" {
   location            = local.location
   sku_name            = "Standard"
   tags                = local.tags
-
-  public_ip_addresses = [azurerm_public_ip.nat.id]
 }
 
 resource "azurerm_subnet_nat_gateway_association" "private" {
   count          = length(local.private_subnets)
   subnet_id      = azurerm_subnet.private[count.index].id
   nat_gateway_id = azurerm_nat_gateway.main.id
+}
+
+resource "azurerm_nat_gateway_public_ip_association" "pip" {
+  nat_gateway_id       = azurerm_nat_gateway.main.id
+  public_ip_address_id = azurerm_public_ip.nat.id
 }

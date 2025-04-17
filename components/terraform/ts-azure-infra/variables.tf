@@ -31,7 +31,6 @@ variable "ssh_public_key_path" {
 variable "ssh_private_key_path" {
   description = "Path to the private SSH key for remote provisioner and SSH access."
   type        = string
-  default     = "~/.ssh/id_rsa"
 }
 
 variable "tags" {
@@ -52,6 +51,11 @@ variable "aks_service_ipv4_cidr" {
 
 variable "cluster_vm_size" {
   description = "VM size for AKS node pool"
+  type        = string
+}
+
+variable "vm_size" {
+  description = "VM size for Tailscale VM"
   type        = string
 }
 

@@ -1,11 +1,3 @@
-# Docker provider configuration using SSH to the Azure VM
-provider "docker" {
-  host     = "ssh://ubuntu@${local.azure_vm_client_public_ip}"
-  # Unfortunately atm, we have no easy way to add host key to ~/.ssh/known_hosts for this provider to not complain and fail when connecting to our instance over SSH
-  # So we disable host key checking to make it work. I REALLY hate this kind of bs with TF providers.
-  ssh_opts = ["-i", "${local.ssh_private_key_path}", "-o", "StrictHostKeyChecking=no"]
-}
-
 # Grab the latest nginx image digest
 resource "docker_image" "nginx" {
   name = "nginx:latest"

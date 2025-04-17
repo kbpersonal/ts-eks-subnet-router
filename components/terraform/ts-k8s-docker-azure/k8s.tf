@@ -1,30 +1,5 @@
-provider "tailscale" {
-  oauth_client_id        = local.oauth_client_id
-  oauth_client_secret    = local.oauth_client_secret
-}
-
-provider "kubernetes" {
-  host                   = local.aks_cluster_endpoint
-  cluster_ca_certificate = local.aks_cluster_ca_certificate
-  token                  = local.aks_cluster_auth_token
-}
-
-provider "kubectl" {
-  host                   = local.aks_cluster_endpoint
-  cluster_ca_certificate = local.aks_cluster_ca_certificate
-  token                  = local.aks_cluster_auth_token
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = local.aks_cluster_endpoint
-    cluster_ca_certificate = local.aks_cluster_ca_certificate
-    token                  = local.aks_cluster_auth_token
-  }
-}
-
 data "azurerm_kubernetes_cluster" "credentials" {
-  name                = local.aks_cluster_name
+  name                = local.cluster_name
   resource_group_name = local.resource_group_name
 }
 
@@ -98,14 +73,14 @@ resource "kubectl_manifest" "connector" {
 apiVersion: tailscale.com/v1alpha1
 kind: Connector
 metadata:
-  name: ${local.name}-cluster-cidrs
+  name: ${local.cluster_name}-cluster-cidrs
 spec:
   proxyClass: ${local.stage}
-  hostname: ${local.name}-cluster-cidrs
+  hostname: ${local.cluster_name}-cluster-cidrs
   subnetRouter:
     advertiseRoutes:
-      - "${local.vpc_cidr}"
-      - "${local.cluster_service_ipv4_cidr}"
+      - "${local.vnet_cidr}"
+      - "${local.aks_service_ipv4_cidr}"
   tags:
     - "tag:k8s-operator"
 YAML

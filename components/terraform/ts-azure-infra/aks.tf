@@ -1,4 +1,5 @@
 resource "azurerm_kubernetes_cluster" "main" {
+  depends_on = [azurerm_subnet_nat_gateway_association.private]
   name                = format("%s-%s-%s-%s-aks", local.tenant, local.environment, local.stage, local.cluster_name)
   location            = local.location
   resource_group_name = azurerm_resource_group.main.name
@@ -7,12 +8,13 @@ resource "azurerm_kubernetes_cluster" "main" {
   sku_tier            = "Standard"
 
   default_node_pool {
-    name                = "np1"
-    vm_size             = local.cluster_vm_size
-    node_count          = local.node_count
-    vnet_subnet_id      = azurerm_subnet.private[0].id
-    enable_auto_scaling = false
-    tags                = local.tags
+    name                 = "np1"
+    type                 = "VirtualMachineScaleSets"
+    vm_size              = local.cluster_vm_size
+    node_count           = local.node_count
+    vnet_subnet_id       = azurerm_subnet.private[0].id
+    auto_scaling_enabled = false
+    tags                 = local.tags
   }
 
   network_profile {
@@ -23,8 +25,11 @@ resource "azurerm_kubernetes_cluster" "main" {
     load_balancer_sku  = "standard"
   }
 
-  api_server_authorized_ip_ranges = [] # API server is private
-  private_cluster_enabled         = true
+  api_server_access_profile {
+    authorized_ip_ranges = ["${local.vnet_cidr}"] # API server is private
+  }
+  
+  private_cluster_enabled = true
 
   identity {
     type = "SystemAssigned"
@@ -39,3 +44,18 @@ data "azurerm_kubernetes_cluster" "credentials" {
   resource_group_name = azurerm_resource_group.main.name
 }
 
+#########################################################################################
+# TS Split-DNS setup for AKS private-only kube-apiserver FQDN resolution in the tailnet #
+#########################################################################################
+
+resource "tailscale_dns_split_nameservers" "azure_resolver" {
+  domain      = "hcp.${local.location}.azmk8s.io"
+  nameservers = [local.vnet_resolver_ip]
+}
+
+resource "tailscale_dns_search_paths" "aks_search_paths" {
+  search_paths = [
+    "azmk8s.io",
+    "svc.cluster.local"
+  ]
+}
